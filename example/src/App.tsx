@@ -90,7 +90,6 @@ export default function App() {
 
   const handlePrint = async () => {
     try {
-      // [options valueForKey:@"imageWidth"];
       const Printer = printerList[selectedValue];
       await Printer.printImage(
         "https://howmuch-pk.s3.ap-southeast-1.amazonaws.com/spree/stores/1380/squared_large/logo-for-grocery-store-vector-21609822.jpeg",
@@ -99,6 +98,9 @@ export default function App() {
       await Printer.printText(
         "<C>sample text bjhbfhjbdjhfbjfhdvfjdvhjdbfjbjhfdbghjfbgbhjfdgbjfdhbgbjhdfgbjhdfbghjdbghdbjgdhhbgghdjfhbgjdfbgbhjd</C>\n"
       );
+      const testUrl =
+        "https://efiskalizimi-app-test.tatime.gov.al/invoice-check/#/verify?iic=7345C1D3B43977764E1F1B12FC916E46&tin=L86412202Q&crtd=2022-09-05T19:04:24+02:00&ord=387&bu=bk089dh321&cr=lj817xj946&sw=mi380qe450&prc=400.00";
+      await BLEPrinter.printQrCode(testUrl, {});
     } catch (err) {
       console.warn(err);
     }

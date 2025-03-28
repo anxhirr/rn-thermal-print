@@ -142,6 +142,15 @@ export const USBPrinter = {
       return console.warn(error);
     });
   },
+
+  printRawData: function (rawData: string, opts: PrinterOptions = {}) {
+    if (opts === void 0) {
+      opts = {};
+    }
+    return RNUSBPrinter.printRawData(rawData, function (error: Error) {
+      return console.warn(error);
+    });
+  },
 };
 
 export const BLEPrinter = {
@@ -232,6 +241,21 @@ export const BLEPrinter = {
       });
     } else {
       RNBLEPrinter.printQrCode(qrCode, function (error: Error) {
+        return console.warn(error);
+      });
+    }
+  },
+
+  printRawData: function (rawData: string, opts: PrinterOptions) {
+    if (opts === void 0) {
+      opts = {};
+    }
+    if (Platform.OS === "ios") {
+      RNBLEPrinter.printRawData(rawData, opts, function (error: Error) {
+        return console.warn(error);
+      });
+    } else {
+      RNBLEPrinter.printRawData(rawData, function (error: Error) {
         return console.warn(error);
       });
     }
@@ -330,6 +354,21 @@ export const NetPrinter = {
       });
     } else {
       RNNetPrinter.printQrCode(qrCode, function (error: Error) {
+        return console.warn(error);
+      });
+    }
+  },
+
+  printRawData: function (rawData: string, opts: PrinterOptions) {
+    if (opts === void 0) {
+      opts = {};
+    }
+    if (Platform.OS === "ios") {
+      RNNetPrinter.printRawData(rawData, opts, function (error: Error) {
+        return console.warn(error);
+      });
+    } else {
+      RNNetPrinter.printRawData(rawData, function (error: Error) {
         return console.warn(error);
       });
     }
