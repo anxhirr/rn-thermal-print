@@ -30,38 +30,32 @@ interface SelectedPrinter
 export default function App() {
   const [selectedValue, setSelectedValue] =
     React.useState<keyof typeof printerList>("ble");
-  const [devices, setDevices] = React.useState<any[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [devices, setDevices] = React.useState<SelectedPrinter[]>([]);
   const [selectedPrinter, setSelectedPrinter] = React.useState<SelectedPrinter>(
     {}
   );
 
+  const Printer = printerList[selectedValue];
+
   React.useEffect(() => {
-    const getListDevices = async () => {
-      const Printer = printerList[selectedValue];
-      // get list device for net printers is support scanning in local ip but not recommended
-      if (selectedValue === "net") return;
+    (async () => {
       try {
-        setLoading(true);
         await Printer.init();
         const results = await Printer.getDevices();
+        if (!results) return;
         setDevices(
           results.map((item: any) => ({ ...item, printerType: selectedValue }))
         );
       } catch (err) {
         console.warn(err);
-      } finally {
-        setLoading(false);
       }
-    };
-    getListDevices();
+    })();
   }, [selectedValue]);
 
   const handleConnectSelectedPrinter = () => {
     if (!selectedPrinter) return;
     const connect = async () => {
       try {
-        setLoading(true);
         switch (selectedPrinter.printerType) {
           case "ble":
             await BLEPrinter.connect(selectedPrinter?.inner_mac_address || "");
@@ -79,8 +73,6 @@ export default function App() {
         }
       } catch (err) {
         console.warn(err);
-      } finally {
-        setLoading(false);
       }
     };
     connect();
@@ -88,9 +80,8 @@ export default function App() {
 
   const handlePrint = async () => {
     try {
-      const Printer = printerList[selectedValue];
       const testUrl =
-        "https://efiskalizimi-app-test.tatime.gov.al/invoice-check/#/verify?iic=7345C1D3B43977764E1F1B12FC916E46&tin=L86412202Q&crtd=2022-09-05T19:04:24+02:00&ord=387&bu=bk089dh321&cr=lj817xj946&sw=mi380qe450&prc=400.00";
+        "Hello World! This is a test QR code. You can scan it with your phone to see the content.";
       await Printer.printQrCode(testUrl, {});
     } catch (err) {
       console.warn(err);
