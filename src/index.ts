@@ -1,4 +1,4 @@
-import { NativeModules, NativeEventEmitter, Platform } from "react-native";
+import { NativeEventEmitter, NativeModules, Platform } from "react-native";
 
 import * as EPToolkit from "./utils/EPToolkit";
 
@@ -126,6 +126,22 @@ export const USBPrinter = {
     RNUSBPrinter.printRawData(billTo64Buffer(text, opts), (error: Error) =>
       console.warn(error)
     ),
+  printImage: function (imgUrl: string, opts: PrinterOptions = {}) {
+    if (opts === void 0) {
+      opts = {};
+    }
+    return RNUSBPrinter.printImageData(imgUrl, function (error: Error) {
+      return console.warn(error);
+    });
+  },
+  printQrCode: function (qrCode: string, opts: PrinterOptions = {}) {
+    if (opts === void 0) {
+      opts = {};
+    }
+    return RNUSBPrinter.printQrCode(qrCode, function (error: Error) {
+      return console.warn(error);
+    });
+  },
 };
 
 export const BLEPrinter = {
@@ -187,6 +203,37 @@ export const BLEPrinter = {
       RNBLEPrinter.printRawData(billTo64Buffer(text, opts), (error: Error) =>
         console.warn(error)
       );
+    }
+  },
+
+  printImage: function (imgUrl: string, opts: PrinterOptions) {
+    if (opts === void 0) {
+      opts = {};
+    }
+    if (Platform.OS === "ios") {
+      console.log("printImage is not supported on iOS");
+      RNBLEPrinter.printImageData(imgUrl, opts, function (error: Error) {
+        return console.warn(error);
+      });
+    } else {
+      RNBLEPrinter.printImageData(imgUrl, function (error: Error) {
+        return console.warn(error);
+      });
+    }
+  },
+
+  printQrCode: function (qrCode: string, opts: PrinterOptions) {
+    if (opts === void 0) {
+      opts = {};
+    }
+    if (Platform.OS === "ios") {
+      RNBLEPrinter.printQrCode(qrCode, opts, function (error: Error) {
+        return console.warn(error);
+      });
+    } else {
+      RNBLEPrinter.printQrCode(qrCode, function (error: Error) {
+        return console.warn(error);
+      });
     }
   },
 
@@ -256,6 +303,35 @@ export const NetPrinter = {
       RNNetPrinter.printRawData(billTo64Buffer(text, opts), (error: Error) =>
         console.warn(error)
       );
+    }
+  },
+
+  printImage: function (imgUrl: string, opts: PrinterOptions) {
+    if (opts === void 0) {
+      opts = {};
+    }
+    if (Platform.OS === "ios") {
+      RNNetPrinter.printImageData(imgUrl, opts, function (error: Error) {
+        return console.warn(error);
+      });
+    } else {
+      RNNetPrinter.printImageData(imgUrl, function (error: Error) {
+        return console.warn(error);
+      });
+    }
+  },
+  printQrCode: function (qrCode: string, opts: PrinterOptions) {
+    if (opts === void 0) {
+      opts = {};
+    }
+    if (Platform.OS === "ios") {
+      RNNetPrinter.printQrCode(qrCode, opts, function (error: Error) {
+        return console.warn(error);
+      });
+    } else {
+      RNNetPrinter.printQrCode(qrCode, function (error: Error) {
+        return console.warn(error);
+      });
     }
   },
 };
