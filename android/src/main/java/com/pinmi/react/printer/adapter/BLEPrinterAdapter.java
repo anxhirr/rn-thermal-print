@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -22,8 +21,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;

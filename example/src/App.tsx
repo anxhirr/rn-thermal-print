@@ -80,9 +80,8 @@ export default function App() {
 
   const handlePrint = async () => {
     try {
-      const testUrl =
-        "Hello World! This is a test QR code. You can scan it with your phone to see the content.";
-      await Printer.printQrCode(testUrl, {});
+      await Printer.printRaw("SGVsbG8gd29ybCBob3cgYXJlIHlvdQ==", {});
+      await Printer.printQrCode("Hello World! This is a test QR code.", {});
     } catch (err) {
       console.warn(err);
     }
