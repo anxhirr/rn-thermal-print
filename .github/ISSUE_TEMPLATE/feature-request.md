@@ -4,7 +4,7 @@ about: Suggest a new idea for the project.
 labels: enhancement
 ---
 
-- [ ] I have searched the [issues](https://github.com/HeligPfleigh/react-native-thermal-receipt-printer/issues) of this repository and believe that this is not a duplicate.
+- [ ] I have searched the [issues](https://github.com/anxhirr/rn-thermal-print/issues) of this repository and believe that this is not a duplicate.
 
 <!-- Provide a general summary of the feature in the Title above -->
 

@@ -1,14 +1,14 @@
-# react-native-thermal-receipt-printer
+# rn-thermal-print
 
 Fork of `react-native-printer` and add implement for auto connect printer with usb
 A React Native Library to support USB/BLE/Net printer
 
-![Node.js Package](https://github.com/HeligPfleigh/react-native-thermal-receipt-printer/workflows/Node.js%20Package/badge.svg)
+![Node.js Package](https://github.com/anxhirr/rn-thermal-print/workflows/Node.js%20Package/badge.svg)
 
 ## Installation
 
 ```
-yarn add react-native-thermal-receipt-printer
+yarn add rn-thermal-print
 ```
 
 ## Troubleshoot
@@ -49,15 +49,16 @@ and comment out code related to Flipper in `ios/AppDelegate.m`
 | NetPrinter | :heavy_check_mark: | :heavy_check_mark: |
 
 ## Predefined tag
-| Tags          | Description           |
-|:-------------:|:---------------------:|
-| C             | Center                |
-| D             | Medium font           |
-| B             | Large font            |
-| M             | Medium font           |
-| CM            | Medium font, centered |
-| CB            | Medium font, centered |
-| CD            | Large font, centered  |
+
+| Tags |      Description      |
+| :--: | :-------------------: |
+|  C   |        Center         |
+|  D   |      Medium font      |
+|  B   |      Large font       |
+|  M   |      Medium font      |
+|  CM  | Medium font, centered |
+|  CB  | Medium font, centered |
+|  CD  | Large font, centered  |
 
 ## Development workflow
 
@@ -90,11 +91,7 @@ yarn example ios
 ## Usage
 
 ```javascript
-import {
-  USBPrinter,
-  NetPrinter,
-  BLEPrinter,
-} from "react-native-thermal-receipt-printer";
+import { USBPrinter, NetPrinter, BLEPrinter } from "rn-thermal-print";
 
 USBPrinter.printText("<C>sample text</C>");
 USBPrinter.printBill("<C>sample bill</C>");

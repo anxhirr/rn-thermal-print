@@ -1,21 +1,20 @@
 import * as React from "react";
 import {
-  StyleSheet,
-  View,
-  Text,
   Button,
   Picker,
+  StyleSheet,
+  Text,
   TextInput,
+  View,
 } from "react-native";
 import {
   BLEPrinter,
-  NetPrinter,
-  USBPrinter,
-  IUSBPrinter,
   IBLEPrinter,
   INetPrinter,
-} from "react-native-thermal-receipt-printer";
-import Loader from "./Loader";
+  IUSBPrinter,
+  NetPrinter,
+  USBPrinter,
+} from "rn-thermal-print";
 
 const printerList: Record<string, any> = {
   ble: BLEPrinter,
@@ -29,9 +28,8 @@ interface SelectedPrinter
 }
 
 export default function App() {
-  const [selectedValue, setSelectedValue] = React.useState<
-    keyof typeof printerList
-  >("ble");
+  const [selectedValue, setSelectedValue] =
+    React.useState<keyof typeof printerList>("ble");
   const [devices, setDevices] = React.useState([]);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [selectedPrinter, setSelectedPrinter] = React.useState<SelectedPrinter>(
@@ -71,10 +69,7 @@ export default function App() {
             );
             break;
           case "net":
-            await NetPrinter.connectPrinter(
-              "192.168.1.100",
-              9100
-            );
+            await NetPrinter.connectPrinter("192.168.1.100", 9100);
             break;
           case "usb":
             await USBPrinter.connectPrinter(
@@ -97,8 +92,13 @@ export default function App() {
     try {
       // [options valueForKey:@"imageWidth"];
       const Printer = printerList[selectedValue];
-      await Printer.printImage("https://howmuch-pk.s3.ap-southeast-1.amazonaws.com/spree/stores/1380/squared_large/logo-for-grocery-store-vector-21609822.jpeg", {imageWidth: 100, paddingX: 300});
-      await Printer.printText("<C>sample text bjhbfhjbdjhfbjfhdvfjdvhjdbfjbjhfdbghjfbgbhjfdgbjfdhbgbjhdfgbjhdfbghjdbghdbjgdhhbgghdjfhbgjdfbgbhjd</C>\n");
+      await Printer.printImage(
+        "https://howmuch-pk.s3.ap-southeast-1.amazonaws.com/spree/stores/1380/squared_large/logo-for-grocery-store-vector-21609822.jpeg",
+        { imageWidth: 100, paddingX: 300 }
+      );
+      await Printer.printText(
+        "<C>sample text bjhbfhjbdjhfbjfhdvfjdvhjdbfjbjhfdbghjfbgbhjfdgbjfdhbgbjhdfgbjhdfbghjdbghdbjgdhhbgghdjfhbgjdfbgbhjd</C>\n"
+      );
     } catch (err) {
       console.warn(err);
     }
@@ -182,7 +182,6 @@ export default function App() {
         title="Print sample"
         onPress={handlePrint}
       />
-     
     </View>
   );
 }

@@ -1,6 +1,6 @@
 {
-  "name": "react-native-thermal-receipt-printer-example",
-  "description": "Example app for react-native-thermal-receipt-printer",
+  "name": "rn-thermal-print-example",
+  "description": "Example app for rn-thermal-print",
   "version": "0.0.1",
   "private": true,
   "scripts": {
