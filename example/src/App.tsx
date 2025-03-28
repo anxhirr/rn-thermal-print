@@ -16,7 +16,7 @@ import {
   USBPrinter,
 } from "rn-thermal-print";
 
-const printerList: Record<string, any> = {
+const printerList = {
   ble: BLEPrinter,
   net: NetPrinter,
   usb: USBPrinter,
@@ -30,7 +30,7 @@ interface SelectedPrinter
 export default function App() {
   const [selectedValue, setSelectedValue] =
     React.useState<keyof typeof printerList>("ble");
-  const [devices, setDevices] = React.useState([]);
+  const [devices, setDevices] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [selectedPrinter, setSelectedPrinter] = React.useState<SelectedPrinter>(
     {}
@@ -44,7 +44,7 @@ export default function App() {
       try {
         setLoading(true);
         await Printer.init();
-        const results = await Printer.getDeviceList();
+        const results = await Printer.getDevices();
         setDevices(
           results.map((item: any) => ({ ...item, printerType: selectedValue }))
         );
@@ -64,15 +64,13 @@ export default function App() {
         setLoading(true);
         switch (selectedPrinter.printerType) {
           case "ble":
-            await BLEPrinter.connectPrinter(
-              selectedPrinter?.inner_mac_address || ""
-            );
+            await BLEPrinter.connect(selectedPrinter?.inner_mac_address || "");
             break;
           case "net":
-            await NetPrinter.connectPrinter("192.168.1.100", 9100);
+            await NetPrinter.connect("192.168.1.100", 9100);
             break;
           case "usb":
-            await USBPrinter.connectPrinter(
+            await USBPrinter.connect(
               selectedPrinter?.vendor_id || "",
               selectedPrinter?.product_id || ""
             );
@@ -91,16 +89,9 @@ export default function App() {
   const handlePrint = async () => {
     try {
       const Printer = printerList[selectedValue];
-      await Printer.printImage(
-        "https://howmuch-pk.s3.ap-southeast-1.amazonaws.com/spree/stores/1380/squared_large/logo-for-grocery-store-vector-21609822.jpeg",
-        { imageWidth: 100, paddingX: 300 }
-      );
-      await Printer.printText(
-        "<C>sample text bjhbfhjbdjhfbjfhdvfjdvhjdbfjbjhfdbghjfbgbhjfdgbjfdhbgbjhdfgbjhdfbghjdbghdbjgdhhbgghdjfhbgjdfbgbhjd</C>\n"
-      );
       const testUrl =
         "https://efiskalizimi-app-test.tatime.gov.al/invoice-check/#/verify?iic=7345C1D3B43977764E1F1B12FC916E46&tin=L86412202Q&crtd=2022-09-05T19:04:24+02:00&ord=387&bu=bk089dh321&cr=lj817xj946&sw=mi380qe450&prc=400.00";
-      await BLEPrinter.printQrCode(testUrl, {});
+      await Printer.printQrCode(testUrl, {});
     } catch (err) {
       console.warn(err);
     }
@@ -108,7 +99,7 @@ export default function App() {
 
   const handleChangePrinterType = async (type: keyof typeof printerList) => {
     setSelectedValue((prev) => {
-      printerList[prev].closeConn();
+      printerList[prev].disconnect();
       return type;
     });
     setSelectedPrinter({});

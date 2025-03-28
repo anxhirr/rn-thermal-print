@@ -21,36 +21,27 @@ export interface INetPrinter {
 }
 export declare const USBPrinter: {
     init: () => Promise<void>;
-    getDeviceList: () => Promise<IUSBPrinter[]>;
-    connectPrinter: (vendorId: string, productId: string) => Promise<IUSBPrinter>;
-    closeConn: () => Promise<void>;
-    printText: (text: string, opts?: PrinterOptions) => void;
-    printBill: (text: string, opts?: PrinterOptions) => void;
-    printImage: (imgUrl: string, opts?: PrinterOptions) => any;
+    getDevices: () => Promise<IUSBPrinter[]>;
+    connect: (vendorId: string, productId: string) => Promise<IUSBPrinter>;
+    disconnect: () => Promise<void>;
     printQrCode: (qrCode: string, opts?: PrinterOptions) => any;
-    printRawData: (rawData: string, opts?: PrinterOptions) => any;
+    printRaw: (rawData: string, opts?: PrinterOptions) => any;
 };
 export declare const BLEPrinter: {
     init: () => Promise<void>;
-    getDeviceList: () => Promise<IBLEPrinter[]>;
-    connectPrinter: (inner_mac_address: string) => Promise<IBLEPrinter>;
-    closeConn: () => Promise<void>;
-    printText: (text: string, opts?: PrinterOptions) => void;
-    printBill: (text: string, opts?: PrinterOptions) => void;
-    printImage: (imgUrl: string, opts: PrinterOptions) => void;
+    getDevices: () => Promise<IBLEPrinter[]>;
+    connect: (inner_mac_address: string) => Promise<IBLEPrinter>;
+    disconnect: () => Promise<void>;
     printQrCode: (qrCode: string, opts: PrinterOptions) => void;
-    printRawData: (rawData: string, opts: PrinterOptions) => void;
+    printRaw: (rawData: string, opts: PrinterOptions) => void;
 };
 export declare const NetPrinter: {
     init: () => Promise<void>;
-    getDeviceList: () => Promise<INetPrinter[]>;
-    connectPrinter: (host: string, port: number) => Promise<INetPrinter>;
-    closeConn: () => Promise<void>;
-    printText: (text: string, opts?: {}) => void;
-    printBill: (text: string, opts?: {}) => void;
-    printImage: (imgUrl: string, opts: PrinterOptions) => void;
+    getDevices: () => Promise<INetPrinter[]>;
+    connect: (host: string, port: number) => Promise<INetPrinter>;
+    disconnect: () => Promise<void>;
     printQrCode: (qrCode: string, opts: PrinterOptions) => void;
-    printRawData: (rawData: string, opts: PrinterOptions) => void;
+    printRaw: (rawData: string, opts: PrinterOptions) => void;
 };
 export declare const NetPrinterEventEmitter: NativeEventEmitter;
 export declare enum RN_THERMAL_RECEIPT_PRINTER_EVENTS {

@@ -1,7 +1,5 @@
 import { NativeEventEmitter, NativeModules, Platform } from "react-native";
 
-import * as EPToolkit from "./utils/EPToolkit";
-
 const RNUSBPrinter = NativeModules.RNUSBPrinter;
 const RNBLEPrinter = NativeModules.RNBLEPrinter;
 const RNNetPrinter = NativeModules.RNNetPrinter;
@@ -30,60 +28,6 @@ export interface INetPrinter {
   port: number;
 }
 
-const textTo64Buffer = (text: string, opts: PrinterOptions) => {
-  const defaultOptions = {
-    beep: false,
-    cut: false,
-    tailingLine: false,
-    encoding: "UTF8",
-  };
-
-  const options = {
-    ...defaultOptions,
-    ...opts,
-  };
-  const buffer = EPToolkit.exchange_text(text, options);
-  return buffer.toString("base64");
-};
-
-const billTo64Buffer = (text: string, opts: PrinterOptions) => {
-  const defaultOptions = {
-    beep: true,
-    cut: true,
-    encoding: "UTF8",
-    tailingLine: true,
-  };
-  const options = {
-    ...defaultOptions,
-    ...opts,
-  };
-  const buffer = EPToolkit.exchange_text(text, options);
-  return buffer.toString("base64");
-};
-
-const textPreprocessingIOS = (text: string) => {
-  let options = {
-    beep: true,
-    cut: true,
-  };
-  return {
-    text: text
-      .replace(/<\/?CB>/g, "")
-      .replace(/<\/?CM>/g, "")
-      .replace(/<\/?CD>/g, "")
-      .replace(/<\/?C>/g, "")
-      .replace(/<\/?D>/g, "")
-      .replace(/<\/?B>/g, "")
-      .replace(/<\/?M>/g, ""),
-    opts: options,
-  };
-};
-
-// const imageToBuffer = async (imagePath: string, threshold: number = 60) => {
-//   const buffer = await EPToolkit.exchange_image(imagePath, threshold);
-//   return buffer.toString("base64");
-// };
-
 export const USBPrinter = {
   init: (): Promise<void> =>
     new Promise((resolve, reject) =>
@@ -93,7 +37,7 @@ export const USBPrinter = {
       )
     ),
 
-  getDeviceList: (): Promise<IUSBPrinter[]> =>
+  getDevices: (): Promise<IUSBPrinter[]> =>
     new Promise((resolve, reject) =>
       RNUSBPrinter.getDeviceList(
         (printers: IUSBPrinter[]) => resolve(printers),
@@ -101,7 +45,7 @@ export const USBPrinter = {
       )
     ),
 
-  connectPrinter: (vendorId: string, productId: string): Promise<IUSBPrinter> =>
+  connect: (vendorId: string, productId: string): Promise<IUSBPrinter> =>
     new Promise((resolve, reject) =>
       RNUSBPrinter.connectPrinter(
         vendorId,
@@ -111,29 +55,12 @@ export const USBPrinter = {
       )
     ),
 
-  closeConn: (): Promise<void> =>
+  disconnect: (): Promise<void> =>
     new Promise((resolve) => {
       RNUSBPrinter.closeConn();
       resolve();
     }),
 
-  printText: (text: string, opts: PrinterOptions = {}): void =>
-    RNUSBPrinter.printRawData(textTo64Buffer(text, opts), (error: Error) =>
-      console.warn(error)
-    ),
-
-  printBill: (text: string, opts: PrinterOptions = {}): void =>
-    RNUSBPrinter.printRawData(billTo64Buffer(text, opts), (error: Error) =>
-      console.warn(error)
-    ),
-  printImage: function (imgUrl: string, opts: PrinterOptions = {}) {
-    if (opts === void 0) {
-      opts = {};
-    }
-    return RNUSBPrinter.printImageData(imgUrl, function (error: Error) {
-      return console.warn(error);
-    });
-  },
   printQrCode: function (qrCode: string, opts: PrinterOptions = {}) {
     if (opts === void 0) {
       opts = {};
@@ -143,7 +70,7 @@ export const USBPrinter = {
     });
   },
 
-  printRawData: function (rawData: string, opts: PrinterOptions = {}) {
+  printRaw: function (rawData: string, opts: PrinterOptions = {}) {
     if (opts === void 0) {
       opts = {};
     }
@@ -162,7 +89,7 @@ export const BLEPrinter = {
       )
     ),
 
-  getDeviceList: (): Promise<IBLEPrinter[]> =>
+  getDevices: (): Promise<IBLEPrinter[]> =>
     new Promise((resolve, reject) =>
       RNBLEPrinter.getDeviceList(
         (printers: IBLEPrinter[]) => resolve(printers),
@@ -170,7 +97,7 @@ export const BLEPrinter = {
       )
     ),
 
-  connectPrinter: (inner_mac_address: string): Promise<IBLEPrinter> =>
+  connect: (inner_mac_address: string): Promise<IBLEPrinter> =>
     new Promise((resolve, reject) =>
       RNBLEPrinter.connectPrinter(
         inner_mac_address,
@@ -179,57 +106,11 @@ export const BLEPrinter = {
       )
     ),
 
-  closeConn: (): Promise<void> =>
+  disconnect: (): Promise<void> =>
     new Promise((resolve) => {
       RNBLEPrinter.closeConn();
       resolve();
     }),
-
-  printText: (text: string, opts: PrinterOptions = {}): void => {
-    if (Platform.OS === "ios") {
-      const processedText = textPreprocessingIOS(text);
-      RNBLEPrinter.printRawData(
-        processedText.text,
-        processedText.opts,
-        (error: Error) => console.warn(error)
-      );
-    } else {
-      RNBLEPrinter.printRawData(textTo64Buffer(text, opts), (error: Error) =>
-        console.warn(error)
-      );
-    }
-  },
-
-  printBill: (text: string, opts: PrinterOptions = {}): void => {
-    if (Platform.OS === "ios") {
-      const processedText = textPreprocessingIOS(text);
-      RNBLEPrinter.printRawData(
-        processedText.text,
-        processedText.opts,
-        (error: Error) => console.warn(error)
-      );
-    } else {
-      RNBLEPrinter.printRawData(billTo64Buffer(text, opts), (error: Error) =>
-        console.warn(error)
-      );
-    }
-  },
-
-  printImage: function (imgUrl: string, opts: PrinterOptions) {
-    if (opts === void 0) {
-      opts = {};
-    }
-    if (Platform.OS === "ios") {
-      console.log("printImage is not supported on iOS");
-      RNBLEPrinter.printImageData(imgUrl, opts, function (error: Error) {
-        return console.warn(error);
-      });
-    } else {
-      RNBLEPrinter.printImageData(imgUrl, function (error: Error) {
-        return console.warn(error);
-      });
-    }
-  },
 
   printQrCode: function (qrCode: string, opts: PrinterOptions) {
     if (opts === void 0) {
@@ -246,7 +127,7 @@ export const BLEPrinter = {
     }
   },
 
-  printRawData: function (rawData: string, opts: PrinterOptions) {
+  printRaw: function (rawData: string, opts: PrinterOptions) {
     if (opts === void 0) {
       opts = {};
     }
@@ -260,11 +141,6 @@ export const BLEPrinter = {
       });
     }
   },
-
-  // printImage: async (imagePath: string) => {
-  //   const tmp = await imageToBuffer(imagePath);
-  //   RNBLEPrinter.printRawData(tmp, (error: Error) => console.warn(error));
-  // },
 };
 
 export const NetPrinter = {
@@ -276,7 +152,7 @@ export const NetPrinter = {
       )
     ),
 
-  getDeviceList: (): Promise<INetPrinter[]> =>
+  getDevices: (): Promise<INetPrinter[]> =>
     new Promise((resolve, reject) =>
       RNNetPrinter.getDeviceList(
         (printers: INetPrinter[]) => resolve(printers),
@@ -284,7 +160,7 @@ export const NetPrinter = {
       )
     ),
 
-  connectPrinter: (host: string, port: number): Promise<INetPrinter> =>
+  connect: (host: string, port: number): Promise<INetPrinter> =>
     new Promise((resolve, reject) =>
       RNNetPrinter.connectPrinter(
         host,
@@ -294,56 +170,12 @@ export const NetPrinter = {
       )
     ),
 
-  closeConn: (): Promise<void> =>
+  disconnect: (): Promise<void> =>
     new Promise((resolve) => {
       RNNetPrinter.closeConn();
       resolve();
     }),
 
-  printText: (text: string, opts = {}): void => {
-    if (Platform.OS === "ios") {
-      const processedText = textPreprocessingIOS(text);
-      RNNetPrinter.printRawData(
-        processedText.text,
-        processedText.opts,
-        (error: Error) => console.warn(error)
-      );
-    } else {
-      RNNetPrinter.printRawData(textTo64Buffer(text, opts), (error: Error) =>
-        console.warn(error)
-      );
-    }
-  },
-
-  printBill: (text: string, opts = {}): void => {
-    if (Platform.OS === "ios") {
-      const processedText = textPreprocessingIOS(text);
-      RNNetPrinter.printRawData(
-        processedText.text,
-        processedText.opts,
-        (error: Error) => console.warn(error)
-      );
-    } else {
-      RNNetPrinter.printRawData(billTo64Buffer(text, opts), (error: Error) =>
-        console.warn(error)
-      );
-    }
-  },
-
-  printImage: function (imgUrl: string, opts: PrinterOptions) {
-    if (opts === void 0) {
-      opts = {};
-    }
-    if (Platform.OS === "ios") {
-      RNNetPrinter.printImageData(imgUrl, opts, function (error: Error) {
-        return console.warn(error);
-      });
-    } else {
-      RNNetPrinter.printImageData(imgUrl, function (error: Error) {
-        return console.warn(error);
-      });
-    }
-  },
   printQrCode: function (qrCode: string, opts: PrinterOptions) {
     if (opts === void 0) {
       opts = {};
@@ -359,7 +191,7 @@ export const NetPrinter = {
     }
   },
 
-  printRawData: function (rawData: string, opts: PrinterOptions) {
+  printRaw: function (rawData: string, opts: PrinterOptions) {
     if (opts === void 0) {
       opts = {};
     }
