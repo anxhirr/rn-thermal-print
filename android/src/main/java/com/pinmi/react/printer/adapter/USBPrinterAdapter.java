@@ -108,7 +108,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
         }
     };
 
-    public void init(ReactApplicationContext reactContext, Callback successCallback, Callback errorCallback) {
+    public void init(ReactApplicationContext reactContext, Callback successCb, Callback errorCb) {
         this.mContext = reactContext;
         this.mUSBManager = (UsbManager) this.mContext.getSystemService(Context.USB_SERVICE);
         this.mPermissionIndent = PendingIntent.getBroadcast(mContext, 0, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_MUTABLE);
@@ -118,7 +118,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         mContext.registerReceiver(mUsbDeviceReceiver, filter);
         Log.v(LOG_TAG, "RNUSBPrinter initialized");
-        successCallback.invoke();
+        successCb.invoke();
     }
 
 
@@ -132,10 +132,10 @@ public class USBPrinterAdapter implements PrinterAdapter {
         }
     }
 
-    public List<PrinterDevice> getDeviceList(Callback errorCallback) {
+    public List<PrinterDevice> getDeviceList(Callback errorCb) {
         List<PrinterDevice> lists = new ArrayList<>();
         if (mUSBManager == null) {
-            errorCallback.invoke("USBManager is not initialized while get device list");
+            errorCb.invoke("USBManager is not initialized while get device list");
             return lists;
         }
 
@@ -147,9 +147,9 @@ public class USBPrinterAdapter implements PrinterAdapter {
 
 
     @Override
-    public void selectDevice(PrinterDeviceId printerDeviceId, Callback successCallback, Callback errorCallback) {
+    public void selectDevice(PrinterDeviceId printerDeviceId, Callback successCb, Callback errorCb) {
         if (mUSBManager == null) {
-            errorCallback.invoke("USBManager is not initialized before select device");
+            errorCb.invoke("USBManager is not initialized before select device");
             return;
         }
 
@@ -160,12 +160,12 @@ public class USBPrinterAdapter implements PrinterAdapter {
                 closeConnectionIfExists();
                 mUSBManager.requestPermission(mUsbDevice, mPermissionIndent);
             }
-            successCallback.invoke(new USBPrinterDevice(mUsbDevice).toRNWritableMap());
+            successCb.invoke(new USBPrinterDevice(mUsbDevice).toRNWritableMap());
             return;
         }
         closeConnectionIfExists();
         if (mUSBManager.getDeviceList().size() == 0) {
-            errorCallback.invoke("Device list is empty, can not choose device");
+            errorCb.invoke("Device list is empty, can not choose device");
             return;
         }
         for (UsbDevice usbDevice : mUSBManager.getDeviceList().values()) {
@@ -173,12 +173,12 @@ public class USBPrinterAdapter implements PrinterAdapter {
                 Log.v(LOG_TAG, "request for device: vendor_id: " + usbPrinterDeviceId.getVendorId() + ", product_id: " + usbPrinterDeviceId.getProductId());
                 closeConnectionIfExists();
                 mUSBManager.requestPermission(usbDevice, mPermissionIndent);
-                successCallback.invoke(new USBPrinterDevice(usbDevice).toRNWritableMap());
+                successCb.invoke(new USBPrinterDevice(usbDevice).toRNWritableMap());
                 return;
             }
         }
 
-        errorCallback.invoke("can not find specified device");
+        errorCb.invoke("can not find specified device");
         return;
     }
 
@@ -226,7 +226,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
     }
 
 
-    public void printRawData(String data, Callback errorCallback) {
+    public void printRawData(String data, Callback errorCb) {
         final String rawData = data;
         Log.v(LOG_TAG, "start to print raw data " + data);
         boolean isConnected = openConnection();
@@ -243,7 +243,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
         } else {
             String msg = "failed to connected to device";
             Log.v(LOG_TAG, msg);
-            errorCallback.invoke(msg);
+            errorCb.invoke(msg);
         }
     }
 
@@ -268,11 +268,11 @@ public class USBPrinterAdapter implements PrinterAdapter {
 
 
     @Override
-    public void printImageData(final String imageUrl, Callback errorCallback) {
+    public void printImageData(final String imageUrl, Callback errorCb) {
         final Bitmap bitmapImage = getBitmapFromURL(imageUrl);
 
         if(bitmapImage == null) {
-            errorCallback.invoke("image not found");
+            errorCb.invoke("image not found");
             return;
         }
 
@@ -312,7 +312,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
         } else {
             String msg = "failed to connected to device";
             Log.v(LOG_TAG, msg);
-            errorCallback.invoke(msg);
+            errorCb.invoke(msg);
         }
 
     }
@@ -344,12 +344,12 @@ public class USBPrinterAdapter implements PrinterAdapter {
     }
 
     @Override
-    public void printQrCode(String qrCode, Callback errorCallback) {
+    public void printQrCode(String qrCode, Callback errorCb) {
 
         final Bitmap bitmapImage = TextToQrImageEncode(qrCode);
 
         if(bitmapImage == null) {
-            errorCallback.invoke("image not found");
+            errorCb.invoke("image not found");
             return;
         }
 
@@ -389,7 +389,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
         } else {
             String msg = "failed to connected to device";
             Log.v(LOG_TAG, msg);
-            errorCallback.invoke(msg);
+            errorCb.invoke(msg);
         }
 
 

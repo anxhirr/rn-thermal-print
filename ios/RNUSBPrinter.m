@@ -17,32 +17,32 @@
 }
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(init:(RCTResponseSenderBlock)successCallback
-                  fail:(RCTResponseSenderBlock)errorCallback) {
+RCT_EXPORT_METHOD(init:(RCTResponseSenderBlock)successCb
+                  fail:(RCTResponseSenderBlock)errorCb) {
     // TODO
-    successCallback(@[@"Init successful"]);
+    successCb(@[@"Init successful"]);
 }
 
-RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
-                  fail:(RCTResponseSenderBlock)errorCallback) {
+RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCb
+                  fail:(RCTResponseSenderBlock)errorCb) {
     // TODO
     NSMutableArray *printerArray = [NSMutableArray new];
-    successCallback(@[printerArray]);
+    successCb(@[printerArray]);
 }
 
 RCT_EXPORT_METHOD(connectPrinter:(NSInteger)vendorId
                   withProductID:(NSInteger)productId
-                  success:(RCTResponseSenderBlock)successCallback
-                  fail:(RCTResponseSenderBlock)errorCallback) {
+                  success:(RCTResponseSenderBlock)successCb
+                  fail:(RCTResponseSenderBlock)errorCb) {
     // TODO
-    errorCallback(@[@"This function is not supported"]);
+    errorCb(@[@"This function is not supported"]);
 }
 
 RCT_EXPORT_METHOD(printRawData:(NSString *)text
                   printerOptions:(NSDictionary *)options
-                  fail:(RCTResponseSenderBlock)errorCallback) {
+                  fail:(RCTResponseSenderBlock)errorCb) {
     // TODO
-    errorCallback(@[@"This function is not supported"]);
+    errorCb(@[@"This function is not supported"]);
 }
 
 RCT_EXPORT_METHOD(closeConn) {

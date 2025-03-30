@@ -151,10 +151,6 @@ export default function App() {
           ))}
         </Picker>
       </View>
-      <View style={styles.section}>
-        <Text>Select printer: </Text>
-        {selectedValue === "net" ? _renderNet() : _renderOther()}
-      </View>
       <Button
         disabled={!selectedPrinter?.device_name}
         title="Connect"
@@ -165,6 +161,10 @@ export default function App() {
         title="Print sample"
         onPress={handlePrint}
       />
+      <View style={styles.section}>
+        <Text>Select printer: </Text>
+        {selectedValue === "net" ? _renderNet() : _renderOther()}
+      </View>
     </View>
   );
 }

@@ -20,17 +20,17 @@
 
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_METHOD(init:(RCTResponseSenderBlock)successCallback
-                  fail:(RCTResponseSenderBlock)errorCallback) {
+RCT_EXPORT_METHOD(init:(RCTResponseSenderBlock)successCb
+                  fail:(RCTResponseSenderBlock)errorCb) {
     @try {
         _printerArray = [NSMutableArray new];
         m_printer = [[NSObject alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleNetPrinterConnectedNotification:) name:@"NetPrinterConnected" object:nil];
         // API MISUSE: <CBCentralManager> can only accept this command while in the powered on state
         [[PrinterSDK defaultPrinterSDK] scanPrintersWithCompletion:^(Printer* printer){}];
-        successCallback(@[@"Init successful"]);
+        successCb(@[@"Init successful"]);
     } @catch (NSException *exception) {
-        errorCallback(@[@"No bluetooth adapter available"]);
+        errorCb(@[@"No bluetooth adapter available"]);
     }
 }
 
@@ -39,8 +39,8 @@ RCT_EXPORT_METHOD(init:(RCTResponseSenderBlock)successCallback
     m_printer = nil;
 }
 
-RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
-                  fail:(RCTResponseSenderBlock)errorCallback) {
+RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCb
+                  fail:(RCTResponseSenderBlock)errorCb) {
     @try {
         !_printerArray ? [NSException raise:@"Null pointer exception" format:@"Must call init function first"] : nil;
         [[PrinterSDK defaultPrinterSDK] scanPrintersWithCompletion:^(Printer* printer){
@@ -51,16 +51,16 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCallback
                 [mapped addObject:dict];
             }];
             NSMutableArray *uniquearray = (NSMutableArray *)[[NSSet setWithArray:mapped] allObjects];;
-            successCallback(@[uniquearray]);
+            successCb(@[uniquearray]);
         }];
     } @catch (NSException *exception) {
-        errorCallback(@[exception.reason]);
+        errorCb(@[exception.reason]);
     }
 }
 
 RCT_EXPORT_METHOD(connectPrinter:(NSString *)inner_mac_address
-                  success:(RCTResponseSenderBlock)successCallback
-                  fail:(RCTResponseSenderBlock)errorCallback) {
+                  success:(RCTResponseSenderBlock)successCb
+                  fail:(RCTResponseSenderBlock)errorCb) {
     @try {
         __block BOOL found = NO;
         __block Printer* selectedPrinter = nil;
@@ -76,18 +76,18 @@ RCT_EXPORT_METHOD(connectPrinter:(NSString *)inner_mac_address
             [[PrinterSDK defaultPrinterSDK] connectBT:selectedPrinter];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"BLEPrinterConnected" object:nil];
             m_printer = selectedPrinter;
-            successCallback(@[[NSString stringWithFormat:@"Connected to printer %@", selectedPrinter.name]]);
+            successCb(@[[NSString stringWithFormat:@"Connected to printer %@", selectedPrinter.name]]);
         } else {
             [NSException raise:@"Invalid connection" format:@"connectPrinter: Can't connect to printer %@", inner_mac_address];
         }
     } @catch (NSException *exception) {
-        errorCallback(@[exception.reason]);
+        errorCb(@[exception.reason]);
     }
 }
 
 RCT_EXPORT_METHOD(printRawData:(NSString *)text
                   printerOptions:(NSDictionary *)options
-                  fail:(RCTResponseSenderBlock)errorCallback) {
+                  fail:(RCTResponseSenderBlock)errorCb) {
     @try {
           NSLog(@"printImageData");
         !m_printer ? [NSException raise:@"Invalid connection" format:@"printRawData: Can't connect to printer"] : nil;
@@ -112,13 +112,13 @@ RCT_EXPORT_METHOD(printRawData:(NSString *)text
         cut ? [[PrinterSDK defaultPrinterSDK] cutPaper] : nil;
         
     } @catch (NSException *exception) {
-        errorCallback(@[exception.reason]);
+        errorCb(@[exception.reason]);
     }
 }
 
 RCT_EXPORT_METHOD(printImageData:(NSString *)imgUrl
                   printerOptions:(NSDictionary *)options
-                  fail:(RCTResponseSenderBlock)errorCallback) {
+                  fail:(RCTResponseSenderBlock)errorCb) {
     @try {
         NSLog(@"printImageData");
        !m_printer ? [NSException raise:@"Invalid connection" format:@"printRawData: Can't connect to printer"] : nil;
@@ -142,7 +142,7 @@ RCT_EXPORT_METHOD(printImageData:(NSString *)imgUrl
         }
         
     } @catch (NSException *exception) {
-        errorCallback(@[exception.reason]);
+        errorCb(@[exception.reason]);
     }
 }
 
@@ -208,7 +208,7 @@ RCT_EXPORT_METHOD(printImageData:(NSString *)imgUrl
 
 RCT_EXPORT_METHOD(printQrCode:(NSString *)qrCode
                   printerOptions:(NSDictionary *)options
-                  fail:(RCTResponseSenderBlock)errorCallback) {
+                  fail:(RCTResponseSenderBlock)errorCb) {
     @try {
         
         !m_printer ? [NSException raise:@"Invalid connection" format:@"printRawData: Can't connect to printer"] : nil;
@@ -229,7 +229,7 @@ RCT_EXPORT_METHOD(printQrCode:(NSString *)qrCode
         }
         
     } @catch (NSException *exception) {
-        errorCallback(@[exception.reason]);
+        errorCb(@[exception.reason]);
     }
 }
 

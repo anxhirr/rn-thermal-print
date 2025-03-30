@@ -35,9 +35,9 @@ public class RNBLEPrinterModule extends ReactContextBaseJavaModule implements RN
 
     @ReactMethod
     @Override
-    public void init(Callback successCallback, Callback errorCallback) {
+    public void init(Callback successCb, Callback errorCb) {
         this.adapter = BLEPrinterAdapter.getInstance();
-        this.adapter.init(reactContext,  successCallback, errorCallback);
+        this.adapter.init(reactContext,  successCb, errorCb);
     }
 
     @ReactMethod
@@ -48,40 +48,40 @@ public class RNBLEPrinterModule extends ReactContextBaseJavaModule implements RN
 
     @ReactMethod
     @Override
-    public void getDeviceList(Callback successCallback, Callback errorCallback)  {
-        List<PrinterDevice> printerDevices = adapter.getDeviceList(errorCallback);
+    public void getDeviceList(Callback successCb, Callback errorCb)  {
+        List<PrinterDevice> printerDevices = adapter.getDeviceList(errorCb);
         WritableArray pairedDeviceList = Arguments.createArray();
         if(printerDevices.size() > 0) {
             for (PrinterDevice printerDevice : printerDevices) {
                 pairedDeviceList.pushMap(printerDevice.toRNWritableMap());
             }
-            successCallback.invoke(pairedDeviceList);
+            successCb.invoke(pairedDeviceList);
         } else {
-            errorCallback.invoke("No Device Found");
+            errorCb.invoke("No Device Found");
         }
     }
 
 
     @ReactMethod
     @Override
-    public void printRawData(String base64Data, Callback errorCallback){
-        adapter.printRawData(base64Data, errorCallback);
+    public void printRawData(String base64Data, Callback errorCb){
+        adapter.printRawData(base64Data, errorCb);
     }
     @ReactMethod
     @Override
-    public void printImageData(String imageUrl, Callback errorCallback) {
-        adapter.printImageData(imageUrl, errorCallback);
+    public void printImageData(String imageUrl, Callback errorCb) {
+        adapter.printImageData(imageUrl, errorCb);
     }
     @ReactMethod
     @Override
-    public void printQrCode(String qrCode, Callback errorCallback) {
-        adapter.printQrCode(qrCode, errorCallback);
+    public void printQrCode(String qrCode, Callback errorCb) {
+        adapter.printQrCode(qrCode, errorCb);
     }
 
 
     @ReactMethod
-    public void connectPrinter(String innerAddress, Callback successCallback, Callback errorCallback) {
-        adapter.selectDevice(BLEPrinterDeviceId.valueOf(innerAddress), successCallback, errorCallback);
+    public void connectPrinter(String innerAddress, Callback successCb, Callback errorCb) {
+        adapter.selectDevice(BLEPrinterDeviceId.valueOf(innerAddress), successCb, errorCb);
     }
 
      // Required for EventEmitter Calls.

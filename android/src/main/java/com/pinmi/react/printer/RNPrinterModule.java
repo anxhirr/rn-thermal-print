@@ -25,20 +25,20 @@ public interface RNPrinterModule {
 
 
 
-    public void init(Callback successCallback, Callback errorCallback);
+    public void init(Callback successCb, Callback errorCb);
 
     public void closeConn();
 
-    public void getDeviceList(Callback successCallback, Callback errorCallback);
+    public void getDeviceList(Callback successCb, Callback errorCb);
 
     @ReactMethod
-    public void printRawData(String base64Data, Callback errorCallback) ;
+    public void printRawData(String base64Data, Callback errorCb) ;
 
     @ReactMethod
-    public void printImageData(String imageUrl, Callback errorCallback) ;
+    public void printImageData(String imageUrl, Callback errorCb) ;
 
     @ReactMethod
-    public void printQrCode(String qrCode, Callback errorCallback) ;
+    public void printQrCode(String qrCode, Callback errorCb) ;
 
 }
 

@@ -16,17 +16,17 @@ import java.util.List;
 public interface PrinterAdapter {
 
 
-    public void init(ReactApplicationContext reactContext, Callback successCallback,  Callback errorCallback);
+    public void init(ReactApplicationContext reactContext, Callback successCb,  Callback errorCb);
 
-    public List<PrinterDevice> getDeviceList(Callback errorCallback);
+    public List<PrinterDevice> getDeviceList(Callback errorCb);
 
-    public void selectDevice(PrinterDeviceId printerDeviceId, Callback successCallback, Callback errorCallback);
+    public void selectDevice(PrinterDeviceId printerDeviceId, Callback successCb, Callback errorCb);
 
     public void closeConnectionIfExists();
 
-    public void printRawData(String rawBase64Data, Callback errorCallback);
+    public void printRawData(String rawBase64Data, Callback errorCb);
 
-    public void printImageData(String imageUrl, Callback errorCallback);
+    public void printImageData(String imageUrl, Callback errorCb);
 
-    public void printQrCode(String qrCode, Callback errorCallback);
+    public void printQrCode(String qrCode, Callback errorCb);
 }

@@ -27,9 +27,9 @@ public class RNNetPrinterModule extends ReactContextBaseJavaModule implements RN
 
     @ReactMethod
     @Override
-    public void init(Callback successCallback, Callback errorCallback) {
+    public void init(Callback successCb, Callback errorCb) {
         this.adapter = NetPrinterAdapter.getInstance();
-        this.adapter.init(reactContext,  successCallback, errorCallback);
+        this.adapter.init(reactContext,  successCb, errorCb);
     }
 
     @ReactMethod
@@ -41,39 +41,39 @@ public class RNNetPrinterModule extends ReactContextBaseJavaModule implements RN
 
     @ReactMethod
     @Override
-    public void getDeviceList(Callback successCallback, Callback errorCallback) {
+    public void getDeviceList(Callback successCb, Callback errorCb) {
         try {
-            this.adapter.getDeviceList(errorCallback);
-            successCallback.invoke();
+            this.adapter.getDeviceList(errorCb);
+            successCb.invoke();
         } catch (Exception ex) {
-            errorCallback.invoke(ex.getMessage());
+            errorCb.invoke(ex.getMessage());
         }
-        // this.adapter.getDeviceList(errorCallback);
+        // this.adapter.getDeviceList(errorCb);
     }
 
     @ReactMethod
-    public void connectPrinter(String host, Integer port, Callback successCallback, Callback errorCallback) {
-        adapter.selectDevice(NetPrinterDeviceId.valueOf(host, port), successCallback, errorCallback);
-    }
-
-    @ReactMethod
-    @Override
-    public void printRawData(String base64Data, Callback errorCallback) {
-        adapter.printRawData(base64Data, errorCallback);
+    public void connectPrinter(String host, Integer port, Callback successCb, Callback errorCb) {
+        adapter.selectDevice(NetPrinterDeviceId.valueOf(host, port), successCb, errorCb);
     }
 
     @ReactMethod
     @Override
-    public void printImageData(String imageUrl, Callback errorCallback) {
+    public void printRawData(String base64Data, Callback errorCb) {
+        adapter.printRawData(base64Data, errorCb);
+    }
+
+    @ReactMethod
+    @Override
+    public void printImageData(String imageUrl, Callback errorCb) {
         Log.v("imageUrl", imageUrl);
-        adapter.printImageData(imageUrl, errorCallback);
+        adapter.printImageData(imageUrl, errorCb);
     }
 
     @ReactMethod
     @Override
-    public void printQrCode(String qrCode, Callback errorCallback) {
+    public void printQrCode(String qrCode, Callback errorCb) {
         Log.v("qrCode", qrCode);
-        adapter.printQrCode(qrCode, errorCallback);
+        adapter.printQrCode(qrCode, errorCb);
     }
 
     // Required for EventEmitter Calls.

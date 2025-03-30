@@ -82,14 +82,14 @@ public class NetPrinterAdapter implements PrinterAdapter {
     }
 
     @Override
-    public void init(ReactApplicationContext reactContext, Callback successCallback, Callback errorCallback) {
+    public void init(ReactApplicationContext reactContext, Callback successCb, Callback errorCb) {
         this.mContext = reactContext;
-        successCallback.invoke();
+        successCb.invoke();
     }
 
     @Override
-    public List<PrinterDevice> getDeviceList(Callback errorCallback) {
-        // errorCallback.invoke("do not need to invoke get device list for net
+    public List<PrinterDevice> getDeviceList(Callback errorCb) {
+        // errorCb.invoke("do not need to invoke get device list for net
         // printer");
         // Use emitter instancee get devicelist to non block main thread
         this.scan();
@@ -180,7 +180,7 @@ public class NetPrinterAdapter implements PrinterAdapter {
     }
 
     @Override
-    public void selectDevice(PrinterDeviceId printerDeviceId, Callback sucessCallback, Callback errorCallback) {
+    public void selectDevice(PrinterDeviceId printerDeviceId, Callback sucessCallback, Callback errorCb) {
         NetPrinterDeviceId netPrinterDeviceId = (NetPrinterDeviceId) printerDeviceId;
 
         if (this.mSocket != null && !this.mSocket.isClosed()
@@ -198,13 +198,13 @@ public class NetPrinterAdapter implements PrinterAdapter {
                 this.mNetDevice = new NetPrinterDevice(netPrinterDeviceId.getHost(), netPrinterDeviceId.getPort());
                 sucessCallback.invoke(this.mNetDevice.toRNWritableMap());
             } else {
-                errorCallback.invoke("unable to build connection with host: " + netPrinterDeviceId.getHost()
+                errorCb.invoke("unable to build connection with host: " + netPrinterDeviceId.getHost()
                         + ", port: " + netPrinterDeviceId.getPort());
                 return;
             }
         } catch (IOException e) {
             e.printStackTrace();
-            errorCallback.invoke("failed to connect printer: " + e.getMessage());
+            errorCb.invoke("failed to connect printer: " + e.getMessage());
         }
     }
 
@@ -225,9 +225,9 @@ public class NetPrinterAdapter implements PrinterAdapter {
     }
 
     @Override
-    public void printRawData(String rawBase64Data, Callback errorCallback) {
+    public void printRawData(String rawBase64Data, Callback errorCb) {
         if (this.mSocket == null) {
-            errorCallback.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
+            errorCb.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
             return;
         }
         final String rawData = rawBase64Data;
@@ -270,16 +270,16 @@ public class NetPrinterAdapter implements PrinterAdapter {
     }
 
     @Override
-    public void printImageData(final String imageUrl, Callback errorCallback) {
+    public void printImageData(final String imageUrl, Callback errorCb) {
         final Bitmap bitmapImage = getBitmapFromURL(imageUrl);
 
         if (bitmapImage == null) {
-            errorCallback.invoke("image not found");
+            errorCb.invoke("image not found");
             return;
         }
 
         if (this.mSocket == null) {
-            errorCallback.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
+            errorCb.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
             return;
         }
 
@@ -319,16 +319,16 @@ public class NetPrinterAdapter implements PrinterAdapter {
     }
 
     @Override
-    public void printQrCode(String qrCode, Callback errorCallback) {
+    public void printQrCode(String qrCode, Callback errorCb) {
         final Bitmap bitmapImage = TextToQrImageEncode(qrCode);
 
         if (bitmapImage == null) {
-            errorCallback.invoke("image not found");
+            errorCb.invoke("image not found");
             return;
         }
 
         if (this.mSocket == null) {
-            errorCallback.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
+            errorCb.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
             return;
         }
 
