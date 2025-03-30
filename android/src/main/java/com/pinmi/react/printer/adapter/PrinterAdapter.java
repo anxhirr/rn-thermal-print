@@ -9,10 +9,6 @@ import com.facebook.react.bridge.ReactApplicationContext;
 
 import java.util.List;
 
-/**
- * Created by xiesubin on 2017/9/21.
- */
-
 public interface PrinterAdapter {
 
     public void init(ReactApplicationContext reactContext, Callback successCb, Callback errorCb);

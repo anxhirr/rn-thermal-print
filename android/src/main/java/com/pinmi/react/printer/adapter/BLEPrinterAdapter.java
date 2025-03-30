@@ -62,10 +62,6 @@ import androidx.annotation.RequiresApi;
 
 import static android.app.Activity.RESULT_OK;
 
-/**
- * Created by xiesubin on 2017/9/21.
- */
-
 public class BLEPrinterAdapter implements PrinterAdapter {
 
     private static BLEPrinterAdapter mInstance;

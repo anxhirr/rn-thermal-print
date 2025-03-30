@@ -16,10 +16,6 @@ import com.pinmi.react.printer.adapter.PrinterDeviceId;
 
 import java.util.List;
 
-/**
- * Created by xiesubin on 2017/9/21.
- */
-
 public interface RNPrinterModule {
 
     public void init(Callback successCb, Callback errorCb);

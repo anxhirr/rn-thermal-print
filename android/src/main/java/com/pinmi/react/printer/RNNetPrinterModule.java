@@ -11,10 +11,6 @@ import com.pinmi.react.printer.adapter.NetPrinterAdapter;
 import com.pinmi.react.printer.adapter.NetPrinterDeviceId;
 import com.pinmi.react.printer.adapter.PrinterAdapter;
 
-/**
- * Created by xiesubin on 2017/9/22.
- */
-
 public class RNNetPrinterModule extends ReactContextBaseJavaModule implements RNPrinterModule {
 
     private PrinterAdapter adapter;

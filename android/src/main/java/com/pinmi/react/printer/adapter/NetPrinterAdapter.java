@@ -41,10 +41,6 @@ import android.graphics.BitmapFactory;
 
 import androidx.annotation.RequiresApi;
 
-/**
- * Created by xiesubin on 2017/9/22.
- */
-
 public class NetPrinterAdapter implements PrinterAdapter {
     private static NetPrinterAdapter mInstance;
     private ReactApplicationContext mContext;
