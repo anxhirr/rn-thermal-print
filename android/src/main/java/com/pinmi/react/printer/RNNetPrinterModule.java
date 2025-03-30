@@ -20,7 +20,7 @@ public class RNNetPrinterModule extends ReactContextBaseJavaModule implements RN
     private PrinterAdapter adapter;
     private ReactApplicationContext reactContext;
 
-    public RNNetPrinterModule(ReactApplicationContext reactContext){
+    public RNNetPrinterModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
     }
@@ -29,7 +29,7 @@ public class RNNetPrinterModule extends ReactContextBaseJavaModule implements RN
     @Override
     public void init(Callback successCb, Callback errorCb) {
         this.adapter = NetPrinterAdapter.getInstance();
-        this.adapter.init(reactContext,  successCb, errorCb);
+        this.adapter.init(reactContext, successCb, errorCb);
     }
 
     @ReactMethod
@@ -80,7 +80,7 @@ public class RNNetPrinterModule extends ReactContextBaseJavaModule implements RN
     @ReactMethod
     public void addListener(String eventName) {
     }
-    
+
     // Required for EventEmitter Calls.
     @ReactMethod
     public void removeListeners(Integer count) {

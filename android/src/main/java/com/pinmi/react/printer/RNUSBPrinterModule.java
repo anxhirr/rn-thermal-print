@@ -32,33 +32,33 @@ public class RNUSBPrinterModule extends ReactContextBaseJavaModule implements RN
     @Override
     public void init(Callback successCb, Callback errorCb) {
         this.adapter = USBPrinterAdapter.getInstance();
-        this.adapter.init(reactContext,  successCb, errorCb);
+        this.adapter.init(reactContext, successCb, errorCb);
     }
 
     @ReactMethod
     @Override
-    public void closeConn()  {
+    public void closeConn() {
         adapter.closeConnectionIfExists();
     }
 
     @ReactMethod
     @Override
-    public void getDeviceList(Callback successCb, Callback errorCb)  {
+    public void getDeviceList(Callback successCb, Callback errorCb) {
         List<PrinterDevice> printerDevices = adapter.getDeviceList(errorCb);
         WritableArray pairedDeviceList = Arguments.createArray();
-        if(printerDevices.size() > 0) {
+        if (printerDevices.size() > 0) {
             for (PrinterDevice printerDevice : printerDevices) {
                 pairedDeviceList.pushMap(printerDevice.toRNWritableMap());
             }
             successCb.invoke(pairedDeviceList);
-        }else{
+        } else {
             errorCb.invoke("No Device Found");
         }
     }
 
     @ReactMethod
     @Override
-    public void printRawData(String base64Data, Callback errorCb){
+    public void printRawData(String base64Data, Callback errorCb) {
         adapter.printRawData(base64Data, errorCb);
     }
 
@@ -73,7 +73,6 @@ public class RNUSBPrinterModule extends ReactContextBaseJavaModule implements RN
     public void printQrCode(String qrCode, Callback errorCb) {
         adapter.printQrCode(qrCode, errorCb);
     }
-
 
     @ReactMethod
     public void connectPrinter(Integer vendorId, Integer productId, Callback successCb, Callback errorCb) {

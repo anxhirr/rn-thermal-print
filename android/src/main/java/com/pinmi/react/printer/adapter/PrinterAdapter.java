@@ -15,8 +15,7 @@ import java.util.List;
 
 public interface PrinterAdapter {
 
-
-    public void init(ReactApplicationContext reactContext, Callback successCb,  Callback errorCb);
+    public void init(ReactApplicationContext reactContext, Callback successCb, Callback errorCb);
 
     public List<PrinterDevice> getDeviceList(Callback errorCb);
 

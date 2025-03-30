@@ -31,27 +31,25 @@ public class RNBLEPrinterModule extends ReactContextBaseJavaModule implements RN
         this.reactContext = reactContext;
     }
 
-
-
     @ReactMethod
     @Override
     public void init(Callback successCb, Callback errorCb) {
         this.adapter = BLEPrinterAdapter.getInstance();
-        this.adapter.init(reactContext,  successCb, errorCb);
+        this.adapter.init(reactContext, successCb, errorCb);
     }
 
     @ReactMethod
     @Override
-    public void closeConn()  {
+    public void closeConn() {
         adapter.closeConnectionIfExists();
     }
 
     @ReactMethod
     @Override
-    public void getDeviceList(Callback successCb, Callback errorCb)  {
+    public void getDeviceList(Callback successCb, Callback errorCb) {
         List<PrinterDevice> printerDevices = adapter.getDeviceList(errorCb);
         WritableArray pairedDeviceList = Arguments.createArray();
-        if(printerDevices.size() > 0) {
+        if (printerDevices.size() > 0) {
             for (PrinterDevice printerDevice : printerDevices) {
                 pairedDeviceList.pushMap(printerDevice.toRNWritableMap());
             }
@@ -61,30 +59,30 @@ public class RNBLEPrinterModule extends ReactContextBaseJavaModule implements RN
         }
     }
 
-
     @ReactMethod
     @Override
-    public void printRawData(String base64Data, Callback errorCb){
+    public void printRawData(String base64Data, Callback errorCb) {
         adapter.printRawData(base64Data, errorCb);
     }
+
     @ReactMethod
     @Override
     public void printImageData(String imageUrl, Callback errorCb) {
         adapter.printImageData(imageUrl, errorCb);
     }
+
     @ReactMethod
     @Override
     public void printQrCode(String qrCode, Callback errorCb) {
         adapter.printQrCode(qrCode, errorCb);
     }
 
-
     @ReactMethod
     public void connectPrinter(String innerAddress, Callback successCb, Callback errorCb) {
         adapter.selectDevice(BLEPrinterDeviceId.valueOf(innerAddress), successCb, errorCb);
     }
 
-     // Required for EventEmitter Calls.
+    // Required for EventEmitter Calls.
     @ReactMethod
     public void addListener(String eventName) {
     }
