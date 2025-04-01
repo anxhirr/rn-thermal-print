@@ -44,7 +44,7 @@ export declare const NetPrinter: {
     printRaw: (rawData: string, opts: PrinterOptions) => void;
 };
 export declare const NetPrinterEventEmitter: NativeEventEmitter;
-export declare enum RN_THERMAL_RECEIPT_PRINTER_EVENTS {
+export declare enum RN_THERMAL_PRINT_EVENTS {
     EVENT_NET_PRINTER_SCANNED_SUCCESS = "scannerResolved",
     EVENT_NET_PRINTER_SCANNING = "scannerRunning",
     EVENT_NET_PRINTER_SCANNED_ERROR = "registerError"
