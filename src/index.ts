@@ -3,30 +3,24 @@ import { NativeEventEmitter, NativeModules, Platform } from "react-native";
 const RNUSBPrinter = NativeModules.RNUSBPrinter;
 const RNBLEPrinter = NativeModules.RNBLEPrinter;
 const RNNetPrinter = NativeModules.RNNetPrinter;
-
-export interface PrinterOptions {
-  beep?: boolean;
-  cut?: boolean;
-  tailingLine?: boolean;
-  encoding?: string;
-}
-
 export interface IUSBPrinter {
-  device_name: string;
-  vendor_id: string;
-  product_id: string;
+  name: string;
+  vendorId: string;
+  productId: string;
 }
 
 export interface IBLEPrinter {
-  device_name: string;
-  inner_mac_address: string;
+  name: string;
+  macAddress: string;
 }
 
 export interface INetPrinter {
-  device_name: string;
+  name: string;
   host: string;
   port: number;
 }
+
+export type ErrorT = "BT_ADAPTER_NOT_AVAILABLE" | "BT_NOT_ENABLED"
 
 export const USBPrinter = {
   init: (): Promise<void> =>
@@ -61,22 +55,12 @@ export const USBPrinter = {
       resolve();
     }),
 
-  printQrCode: function (qrCode: string, opts: PrinterOptions = {}) {
-    if (opts === void 0) {
-      opts = {};
-    }
-    return RNUSBPrinter.printQrCode(qrCode, function (error: Error) {
-      return console.warn(error);
-    });
+  printQrCode: function (qrCode: string) {
+    return RNUSBPrinter.printQrCode(qrCode, console.warn);
   },
 
-  printRaw: function (rawData: string, opts: PrinterOptions = {}) {
-    if (opts === void 0) {
-      opts = {};
-    }
-    return RNUSBPrinter.printRawData(rawData, function (error: Error) {
-      return console.warn(error);
-    });
+  printRaw: function (rawData: string) {
+    return RNUSBPrinter.printRawData(rawData, console.warn);
   },
 };
 
@@ -97,10 +81,10 @@ export const BLEPrinter = {
       )
     ),
 
-  connect: (inner_mac_address: string): Promise<IBLEPrinter> =>
+  connect: (macAddress: string): Promise<IBLEPrinter> =>
     new Promise((resolve, reject) =>
       RNBLEPrinter.connectPrinter(
-        inner_mac_address,
+        macAddress,
         (printer: IBLEPrinter) => resolve(printer),
         (error: Error) => reject(error)
       )
@@ -112,33 +96,19 @@ export const BLEPrinter = {
       resolve();
     }),
 
-  printQrCode: function (qrCode: string, opts: PrinterOptions) {
-    if (opts === void 0) {
-      opts = {};
-    }
+  printQrCode: function (qrCode: string) {
     if (Platform.OS === "ios") {
-      RNBLEPrinter.printQrCode(qrCode, opts, function (error: Error) {
-        return console.warn(error);
-      });
+      RNBLEPrinter.printQrCode(qrCode, {}, console.warn);
     } else {
-      RNBLEPrinter.printQrCode(qrCode, function (error: Error) {
-        return console.warn(error);
-      });
+      RNBLEPrinter.printQrCode(qrCode, console.warn);
     }
   },
 
-  printRaw: function (rawData: string, opts: PrinterOptions) {
-    if (opts === void 0) {
-      opts = {};
-    }
+  printRaw: function (rawData: string) {
     if (Platform.OS === "ios") {
-      RNBLEPrinter.printRawData(rawData, opts, function (error: Error) {
-        return console.warn(error);
-      });
+      RNBLEPrinter.printRawData(rawData, {}, console.warn);
     } else {
-      RNBLEPrinter.printRawData(rawData, function (error: Error) {
-        return console.warn(error);
-      });
+      RNBLEPrinter.printRawData(rawData, console.warn);
     }
   },
 };
@@ -176,33 +146,19 @@ export const NetPrinter = {
       resolve();
     }),
 
-  printQrCode: function (qrCode: string, opts: PrinterOptions) {
-    if (opts === void 0) {
-      opts = {};
-    }
+  printQrCode: function (qrCode: string) {
     if (Platform.OS === "ios") {
-      RNNetPrinter.printQrCode(qrCode, opts, function (error: Error) {
-        return console.warn(error);
-      });
+      RNNetPrinter.printQrCode(qrCode, {}, console.warn);
     } else {
-      RNNetPrinter.printQrCode(qrCode, function (error: Error) {
-        return console.warn(error);
-      });
+      RNNetPrinter.printQrCode(qrCode, console.warn);
     }
   },
 
-  printRaw: function (rawData: string, opts: PrinterOptions) {
-    if (opts === void 0) {
-      opts = {};
-    }
+  printRaw: function (rawData: string) {
     if (Platform.OS === "ios") {
-      RNNetPrinter.printRawData(rawData, opts, function (error: Error) {
-        return console.warn(error);
-      });
+      RNNetPrinter.printRawData(rawData, {}, console.warn);
     } else {
-      RNNetPrinter.printRawData(rawData, function (error: Error) {
-        return console.warn(error);
-      });
+      RNNetPrinter.printRawData(rawData, console.warn);
     }
   },
 };

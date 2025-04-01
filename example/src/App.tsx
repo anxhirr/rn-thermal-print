@@ -58,15 +58,17 @@ export default function App() {
       try {
         switch (selectedPrinter.printerType) {
           case "ble":
-            await BLEPrinter.connect(selectedPrinter?.inner_mac_address || "");
+            console.log("Connecting to BLE printer...");
+            await BLEPrinter.connect(selectedPrinter?.macAddress  || "");
+            console.log("Connected to BLE printer!");
             break;
           case "net":
             await NetPrinter.connect("192.168.1.100", 9100);
             break;
           case "usb":
             await USBPrinter.connect(
-              selectedPrinter?.vendor_id || "",
-              selectedPrinter?.product_id || ""
+              selectedPrinter?.vendorId || "",
+              selectedPrinter?.productId || ""
             );
             break;
           default:
@@ -80,8 +82,8 @@ export default function App() {
 
   const handlePrint = async () => {
     try {
-      await Printer.printRaw("SGVsbG8gd29ybCBob3cgYXJlIHlvdQ==", {});
-      await Printer.printQrCode("Hello World! This is a test QR code.", {});
+      await Printer.printRaw("SGVsbG8gd29ybCBob3cgYXJlIHlvdQ==");
+      await Printer.printQrCode("Hello World! This is a test QR code.");
     } catch (err) {
       console.warn(err);
     }
@@ -98,7 +100,7 @@ export default function App() {
   const handleChangeHostAndPort = (params: string) => (text: string) =>
     setSelectedPrinter((prev) => ({
       ...prev,
-      device_name: "Net Printer",
+      name: "Net Printer",
       [params]: text,
       printerType: "net",
     }));
@@ -126,7 +128,7 @@ export default function App() {
     <Picker selectedValue={selectedPrinter} onValueChange={setSelectedPrinter}>
       {devices.map((item: any, index) => (
         <Picker.Item
-          label={item.device_name}
+          label={item.name}
           value={item}
           key={`printer-item-${index}`}
         />
@@ -152,12 +154,12 @@ export default function App() {
         </Picker>
       </View>
       <Button
-        disabled={!selectedPrinter?.device_name}
+        disabled={!selectedPrinter?.name}
         title="Connect"
         onPress={handleConnectSelectedPrinter}
       />
       <Button
-        disabled={!selectedPrinter?.device_name}
+        disabled={!selectedPrinter?.name}
         title="Print sample"
         onPress={handlePrint}
       />

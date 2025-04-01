@@ -1,11 +1,12 @@
 package com.pinmi.react.printer.adapter;
 
+import com.pinmi.react.printer.utils.AdapterUtils;
+
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.hardware.usb.UsbConstants;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
@@ -16,28 +17,11 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
-import com.google.zxing.qrcode.encoder.ByteMatrix;
-import com.facebook.common.internal.ImmutableMap;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,8 +65,8 @@ public class USBPrinterAdapter implements PrinterAdapter {
                     UsbDevice usbDevice = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                     if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
                         Log.i(LOG_TAG,
-                                "success to grant permission for device " + usbDevice.getDeviceId() + ", vendor_id: "
-                                        + usbDevice.getVendorId() + " product_id: " + usbDevice.getProductId());
+                                "success to grant permission for device " + usbDevice.getDeviceId() + ", vendorId: "
+                                        + usbDevice.getVendorId() + " productId: " + usbDevice.getProductId());
                         mUsbDevice = usbDevice;
                     } else {
                         Toast.makeText(context,
@@ -171,7 +155,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
         for (UsbDevice usbDevice : mUSBManager.getDeviceList().values()) {
             if (usbDevice.getVendorId() == usbPrinterDeviceId.getVendorId()
                     && usbDevice.getProductId() == usbPrinterDeviceId.getProductId()) {
-                Log.v(LOG_TAG, "request for device: vendor_id: " + usbPrinterDeviceId.getVendorId() + ", product_id: "
+                Log.v(LOG_TAG, "request for device: vendorId: " + usbPrinterDeviceId.getVendorId() + ", productId: "
                         + usbPrinterDeviceId.getProductId());
                 closeConnectionIfExists();
                 mUSBManager.requestPermission(usbDevice, mPermissionIndent);
@@ -248,28 +232,9 @@ public class USBPrinterAdapter implements PrinterAdapter {
         }
     }
 
-    public static Bitmap getBitmapFromURL(String src) {
-        try {
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            myBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-
-            return myBitmap;
-        } catch (IOException e) {
-            // Log exception
-            return null;
-        }
-    }
-
     @Override
     public void printImageData(final String imageUrl, Callback errorCb) {
-        final Bitmap bitmapImage = getBitmapFromURL(imageUrl);
+        final Bitmap bitmapImage = AdapterUtils.getBitmapFromURL(imageUrl);
 
         if (bitmapImage == null) {
             errorCb.invoke("image not found");
@@ -280,7 +245,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
         boolean isConnected = openConnection();
         if (isConnected) {
             Log.v(LOG_TAG, "Connected to device");
-            int[][] pixels = getPixelsSlow(bitmapImage);
+            int[][] pixels = AdapterUtils.getPixelsSlow(bitmapImage);
 
             int b = mUsbDeviceConnection.bulkTransfer(mEndPoint, SET_LINE_SPACE_24, SET_LINE_SPACE_24.length, 100000);
 
@@ -300,7 +265,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
 
                 for (int x = 0; x < pixels[y].length; x++) {
                     // for each stripe, recollect 3 bytes (3 bytes = 24 bits)
-                    byte[] slice = recollectSlice(y, x, pixels);
+                    byte[] slice = AdapterUtils.recollectSlice(y, x, pixels);
                     mUsbDeviceConnection.bulkTransfer(mEndPoint, slice, slice.length, 100000);
                 }
 
@@ -315,39 +280,12 @@ public class USBPrinterAdapter implements PrinterAdapter {
             Log.v(LOG_TAG, msg);
             errorCb.invoke(msg);
         }
-
-    }
-
-    private Bitmap TextToQrImageEncode(String Value) {
-
-        com.google.zxing.Writer writer = new QRCodeWriter();
-
-        BitMatrix bitMatrix = null;
-        try {
-            bitMatrix = writer.encode(Value, com.google.zxing.BarcodeFormat.QR_CODE, 250, 250,
-                    ImmutableMap.of(EncodeHintType.MARGIN, 1));
-            int width = 250;
-            int height = 250;
-            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
-                    bmp.setPixel(i, j, bitMatrix.get(i, j) ? Color.BLACK : Color.WHITE);
-                }
-            }
-            return bmp;
-        } catch (WriterException e) {
-            // Log.e("QR ERROR", ""+e);
-
-        }
-
-        return null;
     }
 
     @Override
     public void printQrCode(String qrCode, Callback errorCb) {
 
-        final Bitmap bitmapImage = TextToQrImageEncode(qrCode);
+        final Bitmap bitmapImage = AdapterUtils.textToQrImageEncode(qrCode);
 
         if (bitmapImage == null) {
             errorCb.invoke("image not found");
@@ -358,7 +296,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
         boolean isConnected = openConnection();
         if (isConnected) {
             Log.v(LOG_TAG, "Connected to device");
-            int[][] pixels = getPixelsSlow(bitmapImage);
+            int[][] pixels = AdapterUtils.getPixelsSlow(bitmapImage);
 
             int b = mUsbDeviceConnection.bulkTransfer(mEndPoint, SET_LINE_SPACE_24, SET_LINE_SPACE_24.length, 100000);
 
@@ -378,7 +316,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
 
                 for (int x = 0; x < pixels[y].length; x++) {
                     // for each stripe, recollect 3 bytes (3 bytes = 24 bits)
-                    byte[] slice = recollectSlice(y, x, pixels);
+                    byte[] slice = AdapterUtils.recollectSlice(y, x, pixels);
                     mUsbDeviceConnection.bulkTransfer(mEndPoint, slice, slice.length, 100000);
                 }
 
@@ -394,86 +332,5 @@ public class USBPrinterAdapter implements PrinterAdapter {
             errorCb.invoke(msg);
         }
 
-    }
-
-    public static int[][] getPixelsSlow(Bitmap image2) {
-
-        Bitmap image = resizeTheImageForPrinting(image2);
-
-        int width = image.getWidth();
-        int height = image.getHeight();
-        int[][] result = new int[height][width];
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-                result[row][col] = getRGB(image, col, row);
-            }
-        }
-        return result;
-    }
-
-    private byte[] recollectSlice(int y, int x, int[][] img) {
-        byte[] slices = new byte[] { 0, 0, 0 };
-        for (int yy = y, i = 0; yy < y + 24 && i < 3; yy += 8, i++) {
-            byte slice = 0;
-            for (int b = 0; b < 8; b++) {
-                int yyy = yy + b;
-                if (yyy >= img.length) {
-                    continue;
-                }
-                int col = img[yyy][x];
-                boolean v = shouldPrintColor(col);
-                slice |= (byte) ((v ? 1 : 0) << (7 - b));
-            }
-            slices[i] = slice;
-        }
-        return slices;
-    }
-
-    private boolean shouldPrintColor(int col) {
-        final int threshold = 127;
-        int a, r, g, b, luminance;
-        a = (col >> 24) & 0xff;
-        if (a != 0xff) {// Ignore transparencies
-            return false;
-        }
-        r = (col >> 16) & 0xff;
-        g = (col >> 8) & 0xff;
-        b = col & 0xff;
-
-        luminance = (int) (0.299 * r + 0.587 * g + 0.114 * b);
-
-        return luminance < threshold;
-    }
-
-    public static Bitmap resizeTheImageForPrinting(Bitmap image) {
-        // making logo size 150 or less pixels
-        int width = image.getWidth();
-        int height = image.getHeight();
-        if (width > 200 || height > 200) {
-            if (width > height) {
-                float decreaseSizeBy = (200.0f / width);
-                return getBitmapResized(image, decreaseSizeBy);
-            } else {
-                float decreaseSizeBy = (200.0f / height);
-                return getBitmapResized(image, decreaseSizeBy);
-            }
-        }
-        return image;
-    }
-
-    public static int getRGB(Bitmap bmpOriginal, int col, int row) {
-        // get one pixel color
-        int pixel = bmpOriginal.getPixel(col, row);
-        // retrieve color of all channels
-        int R = Color.red(pixel);
-        int G = Color.green(pixel);
-        int B = Color.blue(pixel);
-        return Color.rgb(R, G, B);
-    }
-
-    public static Bitmap getBitmapResized(Bitmap image, float decreaseSizeBy) {
-        Bitmap resized = Bitmap.createScaledBitmap(image, (int) (image.getWidth() * decreaseSizeBy),
-                (int) (image.getHeight() * decreaseSizeBy), true);
-        return resized;
     }
 }

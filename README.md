@@ -103,9 +103,9 @@ USBPrinter.printBill("<C>sample bill</C>");
 
 ```typescript
 interface IUSBPrinter {
-  device_name: string;
-  vendor_id: number;
-  product_id: number;
+  name: string;
+  vendorId: number;
+  productId: number;
 }
 ```
 
@@ -138,8 +138,8 @@ interface IUSBPrinter {
     <View style={styles.container}>
       {
         printers.map(printer => (
-          <TouchableOpacity key={printer.device_id} onPress={() => _connectPrinter(printer)}>
-            {`device_name: ${printer.device_name}, device_id: ${printer.device_id}, vendor_id: ${printer.vendor_id}, product_id: ${printer.product_id}`}
+          <TouchableOpacity key={printer.deviceId} onPress={() => _connectPrinter(printer)}>
+            {`name: ${printer.name}, deviceId: ${printer.deviceId}, vendorId: ${printer.vendorId}, productId: ${printer.productId}`}
           </TouchableOpacity>
           ))
       }
@@ -160,8 +160,8 @@ interface IUSBPrinter {
 
 ```typescript
 interface IBLEPrinter {
-  device_name: string;
-  inner_mac_address: string;
+  name: string;
+  macAddress: string;
 }
 ```
 
@@ -177,7 +177,7 @@ interface IBLEPrinter {
 
   _connectPrinter => (printer) => {
     //connect printer
-    BLEPrinter.connectPrinter(printer.inner_mac_address).then(
+    BLEPrinter.connectPrinter(printer.macAddress).then(
       setCurrentPrinter,
       error => console.warn(error))
   }
@@ -196,8 +196,8 @@ interface IBLEPrinter {
     <View style={styles.container}>
       {
         this.state.printers.map(printer => (
-          <TouchableOpacity key={printer.inner_mac_address} onPress={() => _connectPrinter(printer)}>
-            {`device_name: ${printer.device_name}, inner_mac_address: ${printer.inner_mac_address}`}
+          <TouchableOpacity key={printer.macAddress} onPress={() => _connectPrinter(printer)}>
+            {`name: ${printer.name}, macAddress: ${printer.macAddress}`}
           </TouchableOpacity>
           ))
       }
@@ -218,7 +218,7 @@ interface IBLEPrinter {
 
 ```typescript
 interface INetPrinter {
-  device_name: string;
+  name: string;
   host: string;
   port: number;
 }
@@ -260,8 +260,8 @@ _Note:_ get list device for net printers is support scanning in local ip but not
       <View style={styles.container}>
         {
           this.state.printers.map(printer => (
-            <TouchableOpacity key={printer.device_id} onPress={(printer) => this._connectPrinter(printer.host, printer.port)}>
-              {`device_name: ${printer.device_name}, host: ${printer.host}, port: ${printer.port}`}
+            <TouchableOpacity key={printer.deviceId} onPress={(printer) => this._connectPrinter(printer.host, printer.port)}>
+              {`name: ${printer.name}, host: ${printer.host}, port: ${printer.port}`}
             </TouchableOpacity>
             ))
         }

@@ -47,7 +47,7 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCb
             [_printerArray addObject:printer];
             NSMutableArray *mapped = [NSMutableArray arrayWithCapacity:[_printerArray count]];
             [_printerArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                NSDictionary *dict = @{ @"device_name" : printer.name, @"inner_mac_address" : printer.UUIDString};
+                NSDictionary *dict = @{ @"name" : printer.name, @"macAddress" : printer.UUIDString};
                 [mapped addObject:dict];
             }];
             NSMutableArray *uniquearray = (NSMutableArray *)[[NSSet setWithArray:mapped] allObjects];;
@@ -58,7 +58,7 @@ RCT_EXPORT_METHOD(getDeviceList:(RCTResponseSenderBlock)successCb
     }
 }
 
-RCT_EXPORT_METHOD(connectPrinter:(NSString *)inner_mac_address
+RCT_EXPORT_METHOD(connectPrinter:(NSString *)macAddress
                   success:(RCTResponseSenderBlock)successCb
                   fail:(RCTResponseSenderBlock)errorCb) {
     @try {
@@ -66,7 +66,7 @@ RCT_EXPORT_METHOD(connectPrinter:(NSString *)inner_mac_address
         __block Printer* selectedPrinter = nil;
         [_printerArray enumerateObjectsUsingBlock: ^(id obj, NSUInteger idx, BOOL *stop){
             selectedPrinter = (Printer *)obj;
-            if ([inner_mac_address isEqualToString:(selectedPrinter.UUIDString)]) {
+            if ([macAddress isEqualToString:(selectedPrinter.UUIDString)]) {
                 found = YES;
                 *stop = YES;
             }
@@ -78,7 +78,7 @@ RCT_EXPORT_METHOD(connectPrinter:(NSString *)inner_mac_address
             m_printer = selectedPrinter;
             successCb(@[[NSString stringWithFormat:@"Connected to printer %@", selectedPrinter.name]]);
         } else {
-            [NSException raise:@"Invalid connection" format:@"connectPrinter: Can't connect to printer %@", inner_mac_address];
+            [NSException raise:@"Invalid connection" format:@"connectPrinter: Can't connect to printer %@", macAddress];
         }
     } @catch (NSException *exception) {
         errorCb(@[exception.reason]);

@@ -18,7 +18,7 @@ public class NetPrinterDevice implements PrinterDevice {
     @Override
     public WritableMap toRNWritableMap() {
         WritableMap deviceMap = Arguments.createMap();
-        deviceMap.putString("device_name",
+        deviceMap.putString("name",
                 this.mNetPrinterDeviceId.getHost() + ":" + this.mNetPrinterDeviceId.getPort());
         deviceMap.putString("host", this.mNetPrinterDeviceId.getHost());
         deviceMap.putInt("port", this.mNetPrinterDeviceId.getPort());

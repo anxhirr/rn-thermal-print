@@ -1,47 +1,42 @@
 import { NativeEventEmitter } from "react-native";
-export interface PrinterOptions {
-    beep?: boolean;
-    cut?: boolean;
-    tailingLine?: boolean;
-    encoding?: string;
-}
 export interface IUSBPrinter {
-    device_name: string;
-    vendor_id: string;
-    product_id: string;
+    name: string;
+    vendorId: string;
+    productId: string;
 }
 export interface IBLEPrinter {
-    device_name: string;
-    inner_mac_address: string;
+    name: string;
+    macAddress: string;
 }
 export interface INetPrinter {
-    device_name: string;
+    name: string;
     host: string;
     port: number;
 }
+export declare type ErrorT = "BT_ADAPTER_NOT_AVAILABLE" | "BT_NOT_ENABLED";
 export declare const USBPrinter: {
     init: () => Promise<void>;
     getDevices: () => Promise<IUSBPrinter[]>;
     connect: (vendorId: string, productId: string) => Promise<IUSBPrinter>;
     disconnect: () => Promise<void>;
-    printQrCode: (qrCode: string, opts?: PrinterOptions) => any;
-    printRaw: (rawData: string, opts?: PrinterOptions) => any;
+    printQrCode: (qrCode: string) => any;
+    printRaw: (rawData: string) => any;
 };
 export declare const BLEPrinter: {
     init: () => Promise<void>;
     getDevices: () => Promise<IBLEPrinter[]>;
-    connect: (inner_mac_address: string) => Promise<IBLEPrinter>;
+    connect: (macAddress: string) => Promise<IBLEPrinter>;
     disconnect: () => Promise<void>;
-    printQrCode: (qrCode: string, opts: PrinterOptions) => void;
-    printRaw: (rawData: string, opts: PrinterOptions) => void;
+    printQrCode: (qrCode: string) => void;
+    printRaw: (rawData: string) => void;
 };
 export declare const NetPrinter: {
     init: () => Promise<void>;
     getDevices: () => Promise<INetPrinter[]>;
     connect: (host: string, port: number) => Promise<INetPrinter>;
     disconnect: () => Promise<void>;
-    printQrCode: (qrCode: string, opts: PrinterOptions) => void;
-    printRaw: (rawData: string, opts: PrinterOptions) => void;
+    printQrCode: (qrCode: string) => void;
+    printRaw: (rawData: string) => void;
 };
 export declare const NetPrinterEventEmitter: NativeEventEmitter;
 export declare enum RN_THERMAL_PRINT_EVENTS {

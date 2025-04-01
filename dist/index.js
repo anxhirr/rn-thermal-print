@@ -24,23 +24,11 @@ export var USBPrinter = {
             resolve();
         });
     },
-    printQrCode: function (qrCode, opts) {
-        if (opts === void 0) { opts = {}; }
-        if (opts === void 0) {
-            opts = {};
-        }
-        return RNUSBPrinter.printQrCode(qrCode, function (error) {
-            return console.warn(error);
-        });
+    printQrCode: function (qrCode) {
+        return RNUSBPrinter.printQrCode(qrCode, console.warn);
     },
-    printRaw: function (rawData, opts) {
-        if (opts === void 0) { opts = {}; }
-        if (opts === void 0) {
-            opts = {};
-        }
-        return RNUSBPrinter.printRawData(rawData, function (error) {
-            return console.warn(error);
-        });
+    printRaw: function (rawData) {
+        return RNUSBPrinter.printRawData(rawData, console.warn);
     },
 };
 export var BLEPrinter = {
@@ -54,9 +42,9 @@ export var BLEPrinter = {
             return RNBLEPrinter.getDeviceList(function (printers) { return resolve(printers); }, function (error) { return reject(error); });
         });
     },
-    connect: function (inner_mac_address) {
+    connect: function (macAddress) {
         return new Promise(function (resolve, reject) {
-            return RNBLEPrinter.connectPrinter(inner_mac_address, function (printer) { return resolve(printer); }, function (error) { return reject(error); });
+            return RNBLEPrinter.connectPrinter(macAddress, function (printer) { return resolve(printer); }, function (error) { return reject(error); });
         });
     },
     disconnect: function () {
@@ -65,34 +53,20 @@ export var BLEPrinter = {
             resolve();
         });
     },
-    printQrCode: function (qrCode, opts) {
-        if (opts === void 0) {
-            opts = {};
-        }
+    printQrCode: function (qrCode) {
         if (Platform.OS === "ios") {
-            RNBLEPrinter.printQrCode(qrCode, opts, function (error) {
-                return console.warn(error);
-            });
+            RNBLEPrinter.printQrCode(qrCode, {}, console.warn);
         }
         else {
-            RNBLEPrinter.printQrCode(qrCode, function (error) {
-                return console.warn(error);
-            });
+            RNBLEPrinter.printQrCode(qrCode, console.warn);
         }
     },
-    printRaw: function (rawData, opts) {
-        if (opts === void 0) {
-            opts = {};
-        }
+    printRaw: function (rawData) {
         if (Platform.OS === "ios") {
-            RNBLEPrinter.printRawData(rawData, opts, function (error) {
-                return console.warn(error);
-            });
+            RNBLEPrinter.printRawData(rawData, {}, console.warn);
         }
         else {
-            RNBLEPrinter.printRawData(rawData, function (error) {
-                return console.warn(error);
-            });
+            RNBLEPrinter.printRawData(rawData, console.warn);
         }
     },
 };
@@ -118,34 +92,20 @@ export var NetPrinter = {
             resolve();
         });
     },
-    printQrCode: function (qrCode, opts) {
-        if (opts === void 0) {
-            opts = {};
-        }
+    printQrCode: function (qrCode) {
         if (Platform.OS === "ios") {
-            RNNetPrinter.printQrCode(qrCode, opts, function (error) {
-                return console.warn(error);
-            });
+            RNNetPrinter.printQrCode(qrCode, {}, console.warn);
         }
         else {
-            RNNetPrinter.printQrCode(qrCode, function (error) {
-                return console.warn(error);
-            });
+            RNNetPrinter.printQrCode(qrCode, console.warn);
         }
     },
-    printRaw: function (rawData, opts) {
-        if (opts === void 0) {
-            opts = {};
-        }
+    printRaw: function (rawData) {
         if (Platform.OS === "ios") {
-            RNNetPrinter.printRawData(rawData, opts, function (error) {
-                return console.warn(error);
-            });
+            RNNetPrinter.printRawData(rawData, {}, console.warn);
         }
         else {
-            RNNetPrinter.printRawData(rawData, function (error) {
-                return console.warn(error);
-            });
+            RNNetPrinter.printRawData(rawData, console.warn);
         }
     },
 };
