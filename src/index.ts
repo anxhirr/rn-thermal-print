@@ -20,8 +20,6 @@ export interface INetPrinter {
   port: number;
 }
 
-export type ErrorT = "BT_ADAPTER_NOT_AVAILABLE" | "BT_NOT_ENABLED"
-
 export const USBPrinter = {
   init: (): Promise<void> =>
     new Promise((resolve, reject) =>

@@ -70,8 +70,6 @@ public class NetPrinterAdapter implements PrinterAdapter {
 
     @Override
     public List<PrinterDevice> getDeviceList(Callback errorCb) {
-        // errorCb.invoke("do not need to invoke get device list for net
-        // printer");
         // Use emitter instancee get devicelist to non block main thread
         this.scan();
         List<PrinterDevice> printerDevices = new ArrayList<>();
@@ -179,8 +177,7 @@ public class NetPrinterAdapter implements PrinterAdapter {
                 this.mNetDevice = new NetPrinterDevice(netPrinterDeviceId.getHost(), netPrinterDeviceId.getPort());
                 sucessCallback.invoke(this.mNetDevice.toRNWritableMap());
             } else {
-                errorCb.invoke("unable to build connection with host: " + netPrinterDeviceId.getHost()
-                        + ", port: " + netPrinterDeviceId.getPort());
+                errorCb.invoke("UNABLE_TO_CONNECT");
                 return;
             }
         } catch (IOException e) {
@@ -208,7 +205,7 @@ public class NetPrinterAdapter implements PrinterAdapter {
     @Override
     public void printRawData(String rawBase64Data, Callback errorCb) {
         if (this.mSocket == null) {
-            errorCb.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
+            errorCb.invoke("BLE_CONNECTION_NOT_BUILT");
             return;
         }
         final String rawData = rawBase64Data;
@@ -236,12 +233,12 @@ public class NetPrinterAdapter implements PrinterAdapter {
         final Bitmap bitmapImage = AdapterUtils.getBitmapFromURL(imageUrl);
 
         if (bitmapImage == null) {
-            errorCb.invoke("image not found");
+            errorCb.invoke("IMAGE_NOT_FOUND");
             return;
         }
 
         if (this.mSocket == null) {
-            errorCb.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
+            errorCb.invoke("BLE_CONNECTION_NOT_BUILT");
             return;
         }
 
@@ -285,12 +282,12 @@ public class NetPrinterAdapter implements PrinterAdapter {
         final Bitmap bitmapImage = AdapterUtils.textToQrImageEncode(qrCode);
 
         if (bitmapImage == null) {
-            errorCb.invoke("image not found");
+            errorCb.invoke("IMAGE_NOT_FOUND");
             return;
         }
 
         if (this.mSocket == null) {
-            errorCb.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
+            errorCb.invoke("BLE_CONNECTION_NOT_BUILT");
             return;
         }
 

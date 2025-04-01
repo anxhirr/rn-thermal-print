@@ -48,7 +48,7 @@ public class RNUSBPrinterModule extends ReactContextBaseJavaModule implements RN
             }
             successCb.invoke(pairedDeviceList);
         } else {
-            errorCb.invoke("No Device Found");
+            errorCb.invoke("DEVICE_NOT_FOUND");
         }
     }
 

@@ -62,14 +62,14 @@ public class BLEPrinterAdapter implements PrinterAdapter {
     public void init(ReactApplicationContext reactContext, Callback successCb, Callback errorCb) {
         BluetoothAdapter bluetoothAdapter = getBTAdapter();
         if (bluetoothAdapter == null) {
-            errorCb.invoke("BT_ADAPTER_NOT_AVAILABLE");
+            errorCb.invoke("BLE_ADAPTER_NOT_AVAILABLE");
             return;
         }
         if (!bluetoothAdapter.isEnabled()) {
-            errorCb.invoke("BT_NOT_ENABLED");
+            errorCb.invoke("BLE_NOT_ENABLED");
             return;
         } else {
-            successCb.invoke("BT_INIT_SUCCESS");
+            successCb.invoke("BLE_INIT_SUCCESS");
         }
     }
 
@@ -78,11 +78,11 @@ public class BLEPrinterAdapter implements PrinterAdapter {
         BluetoothAdapter bluetoothAdapter = getBTAdapter();
         List<PrinterDevice> printerDevices = new ArrayList<>();
         if (bluetoothAdapter == null) {
-            errorCb.invoke("BT_ADAPTER_NOT_AVAILABLE");
+            errorCb.invoke("BLE_ADAPTER_NOT_AVAILABLE");
             return printerDevices;
         }
         if (!bluetoothAdapter.isEnabled()) {
-            errorCb.invoke("BT_NOT_ENABLED");
+            errorCb.invoke("BLE_NOT_ENABLED");
             return printerDevices;
         }
         Set<BluetoothDevice> pairedDevices = getBTAdapter().getBondedDevices();
@@ -96,11 +96,11 @@ public class BLEPrinterAdapter implements PrinterAdapter {
     public void selectDevice(PrinterDeviceId printerDeviceId, Callback successCb, Callback errorCb) {
         final BluetoothAdapter bluetoothAdapter = getBTAdapter();
         if (bluetoothAdapter == null) {
-            errorCb.invoke("BT_ADAPTER_NOT_AVAILABLE");
+            errorCb.invoke("BLE_ADAPTER_NOT_AVAILABLE");
             return;
         }
         if (!bluetoothAdapter.isEnabled()) {
-            errorCb.invoke("BT_NOT_ENABLED");
+            errorCb.invoke("BLE_NOT_ENABLED");
             return;
         }
 
@@ -160,7 +160,7 @@ public class BLEPrinterAdapter implements PrinterAdapter {
     @Override
     public void printRawData(String rawBase64Data, Callback errorCb) {
         if (this.mBluetoothSocket == null) {
-            errorCb.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
+            errorCb.invoke("BLE_CONNECTION_NOT_BUILT");
             return;
         }
         final String rawData = rawBase64Data;
@@ -186,11 +186,11 @@ public class BLEPrinterAdapter implements PrinterAdapter {
         final Bitmap bitmapImage = AdapterUtils.getBitmapFromURL(imageUrl);
 
         if (bitmapImage == null) {
-            errorCb.invoke("image not found");
+            errorCb.invoke("IMAGE_NOT_FOUND");
             return;
         }
         if (this.mBluetoothSocket == null) {
-            errorCb.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
+            errorCb.invoke("BLE_CONNECTION_NOT_BUILT");
             return;
         }
 
@@ -234,11 +234,11 @@ public class BLEPrinterAdapter implements PrinterAdapter {
         final Bitmap bitmapImage = AdapterUtils.textToQrImageEncode(qrCode);
 
         if (bitmapImage == null) {
-            errorCb.invoke("image not found");
+            errorCb.invoke("IMAGE_NOT_FOUND");
             return;
         }
         if (this.mBluetoothSocket == null) {
-            errorCb.invoke("bluetooth connection is not built, may be you forgot to connectPrinter");
+            errorCb.invoke("BLE_CONNECTION_NOT_BUILT");
             return;
         }
 

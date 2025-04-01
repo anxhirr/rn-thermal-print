@@ -13,7 +13,6 @@ export interface INetPrinter {
     host: string;
     port: number;
 }
-export declare type ErrorT = "BT_ADAPTER_NOT_AVAILABLE" | "BT_NOT_ENABLED";
 export declare const USBPrinter: {
     init: () => Promise<void>;
     getDevices: () => Promise<IUSBPrinter[]>;

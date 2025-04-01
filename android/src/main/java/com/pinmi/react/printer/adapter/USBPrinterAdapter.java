@@ -119,7 +119,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
     public List<PrinterDevice> getDeviceList(Callback errorCb) {
         List<PrinterDevice> lists = new ArrayList<>();
         if (mUSBManager == null) {
-            errorCb.invoke("USBManager is not initialized while get device list");
+            errorCb.invoke("USBMANAGER_NOT_INITIALIZED");
             return lists;
         }
 
@@ -132,7 +132,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
     @Override
     public void selectDevice(PrinterDeviceId printerDeviceId, Callback successCb, Callback errorCb) {
         if (mUSBManager == null) {
-            errorCb.invoke("USBManager is not initialized before select device");
+            errorCb.invoke("USBMANAGER_NOT_INITIALIZED");
             return;
         }
 
@@ -149,7 +149,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
         }
         closeConnectionIfExists();
         if (mUSBManager.getDeviceList().size() == 0) {
-            errorCb.invoke("Device list is empty, can not choose device");
+            errorCb.invoke("LIST_EMPTY");
             return;
         }
         for (UsbDevice usbDevice : mUSBManager.getDeviceList().values()) {
@@ -164,7 +164,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
             }
         }
 
-        errorCb.invoke("can not find specified device");
+        errorCb.invoke("DEVICE_NOT_FOUND");
         return;
     }
 
@@ -237,7 +237,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
         final Bitmap bitmapImage = AdapterUtils.getBitmapFromURL(imageUrl);
 
         if (bitmapImage == null) {
-            errorCb.invoke("image not found");
+            errorCb.invoke("IMAGE_NOT_FOUND");
             return;
         }
 
@@ -288,7 +288,7 @@ public class USBPrinterAdapter implements PrinterAdapter {
         final Bitmap bitmapImage = AdapterUtils.textToQrImageEncode(qrCode);
 
         if (bitmapImage == null) {
-            errorCb.invoke("image not found");
+            errorCb.invoke("IMAGE_NOT_FOUND");
             return;
         }
 
